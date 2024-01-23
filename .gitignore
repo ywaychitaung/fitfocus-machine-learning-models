@@ -1,0 +1,8 @@
+# Dataset
+datasets/
+
+# Environment files
+.env/
+
+# macOS
+.DS_Store
