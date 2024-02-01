@@ -50,7 +50,6 @@ def create_model():
 Main program.
 '''
 def main():
-
     # create our CNN model
     model = create_model()
 
@@ -160,6 +159,6 @@ def main():
     # Test the model
     results_df = test_model(trained_model, test_directory, class_labels)
 
-# running via "python gym_equipments_recognition.py"
+# running via "python foods_recognition.py"
 if __name__ == '__main__':
   main()

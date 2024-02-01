@@ -50,7 +50,6 @@ def create_model():
 Main program.
 '''
 def main():
-
     # create our CNN model
     model = create_model()
 
