@@ -1,8 +1,11 @@
 # Dataset
 datasets/
 
+# Models
+models/
+
 # Environment files
-.env/
+env/
 
 # macOS
 .DS_Store
