@@ -4,9 +4,7 @@ import os
 
 from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
-from keras.utils import to_categorical
 from keras import models
-from keras.models import load_model
 from keras.models import Sequential
 from keras.layers import Conv2D, Dense, MaxPooling2D, Flatten, Dropout
 
@@ -14,7 +12,6 @@ classes = 10
 image_height = 224
 image_width = 224
 batch_size = 16
-epochs = 10
 
 train_directory = 'datasets/gym-equipments/train'
 test_directory = 'datasets/gym-equipments/test'
@@ -105,7 +102,7 @@ def main():
         train_generator,
         steps_per_epoch=steps_per_epoch,
         batch_size=batch_size,
-        epochs=epochs,
+        epochs=steps_per_epoch,
         validation_data=validation_generator
     )
       
@@ -152,7 +149,7 @@ def main():
     trained_model = models.load_model(model_path)
 
     class_labels = {
-        0: 'barbell',
+        0: 'apple_pie',
         1: 'dumbbell',
         2: 'gym-ball',
         3: 'kattle-ball',

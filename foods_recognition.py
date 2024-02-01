@@ -1,25 +1,21 @@
-import tensorflow as tf
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import os
 
 from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
-from keras.utils import to_categorical
 from keras import models
-from keras.models import load_model
 from keras.models import Sequential
 from keras.layers import Conv2D, Dense, MaxPooling2D, Flatten, Dropout
-from PIL import Image
 
-image_height = 256
-image_width = 256
-batch_size = 128
+classes = 6
+image_height = 224
+image_width = 224
+batch_size = 16
 
-train_directory = 'Datasets/train_add'
-test_directory = 'Datasets/test'
-validation_directory = 'Datasets/validation'
+train_directory = 'datasets/gym-equipments/train'
+test_directory = 'datasets/gym-equipments/test'
+validation_directory = 'datasets/gym-equipments/validation'
 
 '''
 Create image classification model
@@ -34,17 +30,13 @@ def create_model():
     model.add(MaxPooling2D((2, 2)))
     model.add(Conv2D(filters=128, kernel_size=(3, 3), activation='relu'))
     model.add(MaxPooling2D((2, 2)))
-    model.add(Conv2D(filters=256, kernel_size=(3, 3), activation='relu'))
-    model.add(MaxPooling2D((2, 2)))
-    model.add(Conv2D(filters=512, kernel_size=(3, 3), activation='relu'))
-    model.add(MaxPooling2D((2, 2)))
     model.add(Flatten())
-    model.add(Dense(units=512, activation='relu'))
+    model.add(Dense(units=128, activation='relu'))
     model.add(Dropout(0.5))
 
-    # output layer: performs classification
-    # 101 possible classes
-    model.add(Dense(units=101, activation='softmax'))
+    # output layer: performs classification; the image is either
+    # 10 possible classes
+    model.add(Dense(units=classes, activation='softmax'))
 
     # build the model
     model.compile(optimizer='adam',
@@ -58,6 +50,7 @@ def create_model():
 Main program.
 '''
 def main():
+
     # create our CNN model
     model = create_model()
 
@@ -109,7 +102,7 @@ def main():
         train_generator,
         steps_per_epoch=steps_per_epoch,
         batch_size=batch_size,
-        epochs=100,
+        epochs=steps_per_epoch,
         validation_data=validation_generator
     )
       
@@ -149,36 +142,24 @@ def main():
         results_df['Predicted Class'] = results_df['Predicted Class'].map(class_labels)
 
         return results_df
-    
-    def load_class_labels(filename):
-        with open(filename, 'r') as file:
-            class_labels = file.read().splitlines()
-        return class_labels
-
-    def save_results_and_display_accuracy(results_df, save_path):
-        results_df.to_csv(save_path, index=False)
-
-        correct_predictions = np.sum(np.array(results_df['Actual Class']) == np.array(results_df['Predicted Class']))
-        total_predictions = len(results_df)
-        accuracy = correct_predictions / total_predictions
-
-        print(f'Test Accuracy: {accuracy * 100}%')
 
     # Load the trained model
-    model_path = 'Models/food_model.keras'
+    model_path = 'Models/gym-equipments.h5'
     model.save(model_path)
     trained_model = models.load_model(model_path)
 
-    # 
-    class_labels = load_class_labels('classes.txt')
+    class_labels = {
+        0: 'apple_pie',
+        1: 'beef_carpaccio',
+        2: 'caprese_salad',
+        3: 'donuts',
+        4: 'eggs_benedict',
+        5: 'fish_and_chips'
+    }
 
     # Test the model
     results_df = test_model(trained_model, test_directory, class_labels)
 
-    # Save results and display accuracy
-    save_path = 'Results/result.csv'
-    save_results_and_display_accuracy(results_df, save_path)
-
-# running app
+# running via "python gym_equipments_recognition.py"
 if __name__ == '__main__':
   main()
